@@ -51,7 +51,7 @@ public class GameController {
     public ResponseEntity<Response<?>> createGame(@RequestBody Game game){
         if (game.getTitle() == null || game.getGameStudio() == null || game.getGenre() == null){
             ErrorResponse error = new ErrorResponse();
-            error.set("Could not create a new movie, please check all fields are correct");
+            error.set("Could not create a new game, please check all fields are correct");
             return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
         }
 

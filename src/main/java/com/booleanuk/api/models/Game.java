@@ -1,6 +1,9 @@
 package com.booleanuk.api.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "games")
@@ -24,6 +27,11 @@ public class Game {
 
     @Column
     private String genre;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties(value = {"title", "game_studio", "genre", "num_of_players", "age"})
+    private User user;
 
     public Game() {
     }
