@@ -1,6 +1,8 @@
 package com.booleanuk.api.controller;
 
+import com.booleanuk.api.models.Game;
 import com.booleanuk.api.models.User;
+import com.booleanuk.api.repositories.GameRepository;
 import com.booleanuk.api.repositories.UserRepository;
 import com.booleanuk.api.responses.ErrorResponse;
 import com.booleanuk.api.responses.Response;
@@ -19,6 +21,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private GameRepository gameRepository;
 
     @GetMapping
     public ResponseEntity<Response<?>> getAllUsers(){
@@ -62,9 +67,10 @@ public class UserController {
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Response<?>> updateUser(@PathVariable int id, @RequestBody User user){
-        User userToUpdate = this.userRepository.findById(id).orElse(null);
+    @PutMapping("/{userId}/games/{gamesId}")
+    public ResponseEntity<Response<?>> updateUser(@PathVariable int userId, @PathVariable(required = false) int gamesId, @RequestBody User user){
+        User userToUpdate = this.userRepository.findById(userId).orElse(null);
+        Game game = this.gameRepository.findById(gamesId).orElse(null);
 
         if (userToUpdate == null){
             ErrorResponse error = new ErrorResponse();
@@ -78,13 +84,17 @@ public class UserController {
         userToUpdate.setEmail(user.getEmail());
         userToUpdate.setPhone(user.getPhone());
 
+        if (game != null){
+            game.setUser(userToUpdate);
+            userToUpdate.getGames().add(game);
+        }
+
         this.userRepository.save(userToUpdate);
 
         UserResponse userResponse = new UserResponse();
         userResponse.set(userToUpdate);
 
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
-
     }
 
     @DeleteMapping("/{id}")
@@ -105,4 +115,6 @@ public class UserController {
 
         return ResponseEntity.ok(userResponse);
     }
+
+
 }
