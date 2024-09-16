@@ -1,4 +1,4 @@
-package com.booleanuk.api.GameController;
+package com.booleanuk.api.controller;
 
 import com.booleanuk.api.models.Game;
 import com.booleanuk.api.repositories.GameRepository;
@@ -6,7 +6,6 @@ import com.booleanuk.api.responses.ErrorResponse;
 import com.booleanuk.api.responses.GameListResponse;
 import com.booleanuk.api.responses.GameResponse;
 import com.booleanuk.api.responses.Response;
-import jakarta.persistence.NamedStoredProcedureQueries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -83,8 +82,10 @@ public class GameController {
         gameToUpdate.setGenre(game.getGenre());
         gameToUpdate.setNumOfPlayers(game.getNumOfPlayers());
         gameToUpdate.setAge(game.getAge());
+        this.gameRepository.save(gameToUpdate);
 
         GameResponse gameResponse = new GameResponse();
+        gameResponse.set(gameToUpdate);
 
         return new ResponseEntity<>(gameResponse, HttpStatus.CREATED);
     }
@@ -105,5 +106,4 @@ public class GameController {
 
         return new ResponseEntity<>(gameResponse, HttpStatus.CREATED);
     }
-
 }
